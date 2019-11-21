@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Movie Jetpack</string>
+
+    <string name="tab_title_movie">Movies</string>
+    <string name="tab_title_tv_show">TV Show</string>
+    <string name="detail_activity_title">Detail</string>
+    <string name="detail_runtime">Runtime: %d mins</string>
+    <string name="detail_synopsis">Synopsis</string>
+    <string name="detail_rating">Rating: %s</string>
+    <string name="runtime_mins">%d mins</string>
+    <string name="no_internet_connection">No Internet Connection</string>
+    <string name="count_voters">%s voters</string>
 </resources>

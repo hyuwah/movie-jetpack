@@ -19,9 +19,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 /**
  * A simple [Fragment] subclass.
  */
-class MovieListFragment : Fragment(), DiscoverListAdapter.Interaction {
+class TvShowListFragment : Fragment(), DiscoverListAdapter.Interaction {
 
-    private val viewModel  : MovieListViewModel by viewModel()
+    private val viewModel  : TvShowListViewModel by viewModel()
     private lateinit var adapter: DiscoverListAdapter
 
     override fun onCreateView(
@@ -37,14 +37,14 @@ class MovieListFragment : Fragment(), DiscoverListAdapter.Interaction {
         adapter = DiscoverListAdapter(this)
         rv_movie_list.layoutManager = LinearLayoutManager(requireContext())
         rv_movie_list.adapter = adapter
-        adapter.submitList(viewModel.movies)
+        adapter.submitList(viewModel.tvShows)
     }
 
 
     override fun onItemSelected(position: Int, item: MovieModel) {
         startActivity(intentFor<DetailActivity>(
             DetailActivity.ID to item.id,
-            DetailActivity.TYPE to "movie"
+            DetailActivity.TYPE to "tvshow"
         ))
     }
 

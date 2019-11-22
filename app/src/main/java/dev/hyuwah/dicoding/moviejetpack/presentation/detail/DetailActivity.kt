@@ -1,8 +1,10 @@
 package dev.hyuwah.dicoding.moviejetpack.presentation.detail
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import dev.hyuwah.dicoding.moviejetpack.R
+import dev.hyuwah.dicoding.moviejetpack.data.Constant.TYPES
 import dev.hyuwah.dicoding.moviejetpack.data.MovieModel
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.view_detail_description.*
@@ -15,6 +17,7 @@ class DetailActivity : AppCompatActivity() {
         const val ID = "id"
         const val TYPE = "type"
     }
+
 
     private val viewModel: DetailViewModel by viewModel()
     private lateinit var type: String
@@ -30,12 +33,13 @@ class DetailActivity : AppCompatActivity() {
         val type = intent.getStringExtra(TYPE)
 
         type?.let {
-            tv_detail_title.text = type
-            if (type == "movie") {
+            if (type == TYPES.MOVIE.name) {
+                tv_detail_title.text = TYPES.MOVIE.value
                 viewModel.getMovieById(id)?.let { movie ->
                     setupView(movie)
                 }
             } else {
+                tv_detail_title.text = TYPES.TVSHOW.value
                 viewModel.getTvShowById(id)?.let { tvShow ->
                     setupView(tvShow)
                 }
@@ -43,7 +47,13 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == android.R.id.home) finish()
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun setupView(movieItem: MovieModel) {
+        supportActionBar?.title = movieItem.title
         iv_detail_poster.setImageResource(movieItem.posterPath)
         tv_detail_genre.text = String.format(getString(R.string.count_voters), movieItem.voteCount)
         tv_detail_runtime.text = movieItem.releaseDate

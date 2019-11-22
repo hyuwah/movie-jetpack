@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import dev.hyuwah.dicoding.moviejetpack.R
+import dev.hyuwah.dicoding.moviejetpack.data.Constant
 import dev.hyuwah.dicoding.moviejetpack.data.MovieModel
 import dev.hyuwah.dicoding.moviejetpack.presentation.adapter.DiscoverListAdapter
 import dev.hyuwah.dicoding.moviejetpack.presentation.detail.DetailActivity
@@ -44,7 +45,7 @@ class MovieListFragment : Fragment(), DiscoverListAdapter.Interaction {
     override fun onItemSelected(position: Int, item: MovieModel) {
         startActivity(intentFor<DetailActivity>(
             DetailActivity.ID to item.id,
-            DetailActivity.TYPE to "movie"
+            DetailActivity.TYPE to Constant.TYPES.MOVIE.name
         ))
     }
 

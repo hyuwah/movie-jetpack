@@ -1,6 +1,7 @@
 package dev.hyuwah.dicoding.moviejetpack.presentation.detail
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import dev.hyuwah.dicoding.moviejetpack.R
 import dev.hyuwah.dicoding.moviejetpack.data.Constant.TYPES
@@ -44,6 +45,11 @@ class DetailActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == android.R.id.home) finish()
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setupView(movieItem: MovieModel) {

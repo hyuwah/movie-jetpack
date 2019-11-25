@@ -2,18 +2,17 @@ package dev.hyuwah.dicoding.moviejetpack.presentation.main
 
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import dev.hyuwah.dicoding.moviejetpack.R
 import dev.hyuwah.dicoding.moviejetpack.data.Constant
 import dev.hyuwah.dicoding.moviejetpack.data.MovieModel
 import dev.hyuwah.dicoding.moviejetpack.presentation.adapter.DiscoverListAdapter
 import dev.hyuwah.dicoding.moviejetpack.presentation.detail.DetailActivity
-import kotlinx.android.synthetic.main.fragment_movie_list.*
+import kotlinx.android.synthetic.main.fragment_tvshow_list.*
 import org.jetbrains.anko.support.v4.intentFor
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -29,15 +28,15 @@ class TvShowListFragment : Fragment(), DiscoverListAdapter.Interaction {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_movie_list, container, false)
+        return inflater.inflate(R.layout.fragment_tvshow_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        srl_movie_list.isEnabled = false
+        srl_tvshow_list.isEnabled = false
         adapter = DiscoverListAdapter(this)
-        rv_movie_list.layoutManager = LinearLayoutManager(requireContext())
-        rv_movie_list.adapter = adapter
+        rv_tvshow_list.layoutManager = LinearLayoutManager(requireContext())
+        rv_tvshow_list.adapter = adapter
         adapter.submitList(viewModel.tvShows)
     }
 

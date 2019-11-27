@@ -1,16 +1,26 @@
 package dev.hyuwah.dicoding.moviejetpack.presentation
 
-import dev.hyuwah.dicoding.moviejetpack.data.DummySource
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
+import dev.hyuwah.dicoding.moviejetpack.data.Constant
 import dev.hyuwah.dicoding.moviejetpack.data.Repository
+import dev.hyuwah.dicoding.moviejetpack.data.helper.DummyData
 import dev.hyuwah.dicoding.moviejetpack.presentation.detail.DetailViewModel
+import dev.hyuwah.dicoding.moviejetpack.presentation.model.MovieItem
+import dev.hyuwah.dicoding.moviejetpack.presentation.model.Resource
 import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
-import org.junit.Assert.assertEquals
+import io.mockk.spyk
+import io.mockk.verify
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class DetailViewModelTest {
+    @Rule
+    @JvmField
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     @MockK
     private lateinit var repository: Repository
@@ -23,37 +33,73 @@ class DetailViewModelTest {
         viewModel = DetailViewModel(repository)
     }
 
+    private fun createMockObserver(): Observer<Resource<MovieItem>> = spyk(Observer { })
+
     @Test
     fun `Should successfully get movie by id`() {
-//        val movieId = 1
-//        every { repository.getMovieById(any()) }.returns(DummySource.movieList[0])
-//        val result = viewModel.getMovieById(movieId)
-//        assert(result != null)
-//        assertEquals(DummySource.movieList[0], result)
+        val movieId = 1
+        val mockObserver = createMockObserver()
+        val dummyData = DummyData.MovieList.normal().first()
+        coEvery { repository.fetchMovieDetailById(any()) }
+            .returns(dummyData)
+
+        viewModel.state.observeForever(mockObserver)
+
+        viewModel.load(Constant.TYPES.MOVIE.name, movieId)
+
+        verify { mockObserver.onChanged(Resource.Loading) }
+        verify { mockObserver.onChanged(Resource.Success(dummyData)) }
     }
 
     @Test
     fun `Should failed to get movie by id`() {
-//        val movieId = 1
-//        every { repository.getMovieById(any()) }.returns(null)
-//        val result = viewModel.getMovieById(movieId)
-//        assert(result == null)
+        val movieId = 1
+        val mockObserver = createMockObserver()
+        val dummyData = MovieItem()
+        coEvery { repository.fetchMovieDetailById(any()) }
+            .returns(dummyData)
+
+        viewModel.state.observeForever(mockObserver)
+
+        viewModel.load(Constant.TYPES.MOVIE.name, movieId)
+
+        verify { mockObserver.onChanged(Resource.Loading) }
+        verify { mockObserver.onChanged(Resource.Success(dummyData)) }
+        val movieResult = (viewModel.state.value as Resource.Success).data
+        assert(movieResult.title.isEmpty())
     }
 
     @Test
     fun `Should successfully get tv show by id`() {
-//        val tvShowId = 101
-//        every { repository.getTvShowById(any()) }.returns(DummySource.tvShowList[0])
-//        val result = viewModel.getTvShowById(tvShowId)
-//        assert(result != null)
-//        assertEquals(DummySource.tvShowList[0], result)
+        val tvShowId = 101
+        val mockObserver = createMockObserver()
+        val dummyData = DummyData.MovieList.normal().first()
+        coEvery { repository.fetchTvShowDetailById(any()) }
+            .returns(dummyData)
+
+        viewModel.state.observeForever(mockObserver)
+
+        viewModel.load(Constant.TYPES.TVSHOW.name, tvShowId)
+
+        verify { mockObserver.onChanged(Resource.Loading) }
+        verify { mockObserver.onChanged(Resource.Success(dummyData)) }
     }
 
     @Test
     fun `Should failed to get tv show by id`() {
-//        val tvShowId = 101
-//        every { repository.getTvShowById(any()) }.returns(null)
-//        val result = viewModel.getTvShowById(tvShowId)
-//        assert(result == null)
+        val tvShowId = 101
+        val mockObserver = createMockObserver()
+        val dummyData = MovieItem()
+        coEvery { repository.fetchTvShowDetailById(any()) }
+            .returns(dummyData)
+
+        viewModel.state.observeForever(mockObserver)
+
+        viewModel.load(Constant.TYPES.TVSHOW.name, tvShowId)
+
+        verify { mockObserver.onChanged(Resource.Loading) }
+        verify { mockObserver.onChanged(Resource.Success(dummyData)) }
+        val movieResult = (viewModel.state.value as Resource.Success).data
+        assert(movieResult.title.isEmpty())
     }
 }

@@ -10,7 +10,6 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.hyuwah.dicoding.moviejetpack.R
 import dev.hyuwah.dicoding.moviejetpack.data.Constant
-import dev.hyuwah.dicoding.moviejetpack.data.MovieModel
 import dev.hyuwah.dicoding.moviejetpack.presentation.adapter.DiscoverListAdapter
 import dev.hyuwah.dicoding.moviejetpack.presentation.detail.DetailActivity
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.MovieItem
@@ -49,21 +48,21 @@ class TvShowListFragment : Fragment(), DiscoverListAdapter.Interaction {
 
     private fun updateUI(resource: Resource<List<MovieItem>>){
         showNoInternetView(false)
+        EspressoIdlingResource.increment()
         when(resource){
             is Resource.Loading -> {
-                //EspressoIdlingResource.increment()
                 showLoading(true)
             }
             is Resource.Success -> {
                 showLoading(false)
                 adapter.submitList(resource.data)
-                //EspressoIdlingResource.decrement()
+                EspressoIdlingResource.decrement()
             }
             is Resource.Failure -> {
                 showLoading(false)
                 showNoInternetView(true)
                 toast("Error ${resource.throwable.localizedMessage}")
-                //EspressoIdlingResource.decrement()
+                EspressoIdlingResource.decrement()
             }
         }
     }

@@ -2,17 +2,17 @@ package dev.hyuwah.dicoding.moviejetpack.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import dev.hyuwah.dicoding.moviejetpack.data.DummySource
 import dev.hyuwah.dicoding.moviejetpack.data.IRepository
-import dev.hyuwah.dicoding.moviejetpack.data.Repository
 import dev.hyuwah.dicoding.moviejetpack.data.helper.DummyData
 import dev.hyuwah.dicoding.moviejetpack.presentation.main.MovieListViewModel
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.MovieItem
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.Resource
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.spyk
+import io.mockk.verify
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

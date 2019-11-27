@@ -2,6 +2,8 @@ package dev.hyuwah.dicoding.moviejetpack.data.helper
 
 import dev.hyuwah.dicoding.moviejetpack.data.remote.response.DiscoverMoviesResponse
 import dev.hyuwah.dicoding.moviejetpack.data.remote.response.DiscoverTvResponse
+import dev.hyuwah.dicoding.moviejetpack.data.remote.response.MovieDetailResponse
+import dev.hyuwah.dicoding.moviejetpack.data.remote.response.TvShowDetailResponse
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.MovieItem
 
 object DummyData {
@@ -51,6 +53,20 @@ object DummyData {
                         name = "TV Show 1"
                     )
                 )
+            )
+        }
+    }
+
+    object Detail {
+        fun tvShowNormalResponse(): TvShowDetailResponse {
+            return TvShowDetailResponse(
+                name = "TV Show 1"
+            )
+        }
+
+        fun movieNormalResponse(): MovieDetailResponse {
+            return MovieDetailResponse(
+                title = "Movie 1"
             )
         }
     }

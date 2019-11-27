@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.hyuwah.dicoding.moviejetpack.data.Constant
 import dev.hyuwah.dicoding.moviejetpack.data.IRepository
-import dev.hyuwah.dicoding.moviejetpack.data.MovieModel
-import dev.hyuwah.dicoding.moviejetpack.data.Repository
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.MovieItem
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.Resource
 import kotlinx.coroutines.Dispatchers

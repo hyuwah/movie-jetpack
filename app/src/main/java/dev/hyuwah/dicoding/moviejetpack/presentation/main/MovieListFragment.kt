@@ -2,16 +2,14 @@ package dev.hyuwah.dicoding.moviejetpack.presentation.main
 
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import dev.hyuwah.dicoding.moviejetpack.R
 import dev.hyuwah.dicoding.moviejetpack.data.Constant
-import dev.hyuwah.dicoding.moviejetpack.data.MovieModel
 import dev.hyuwah.dicoding.moviejetpack.presentation.adapter.DiscoverListAdapter
 import dev.hyuwah.dicoding.moviejetpack.presentation.detail.DetailActivity
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.MovieItem
@@ -57,18 +55,18 @@ class MovieListFragment : Fragment(), DiscoverListAdapter.Interaction {
 
     private fun updateUI(resource: Resource<List<MovieItem>>){
         showNoInternetView(false)
+        EspressoIdlingResource.increment()
         when(resource){
             is Resource.Loading -> {
-                //EspressoIdlingResource.increment()
                 showLoading(true)
             }
             is Resource.Success -> {
-                //EspressoIdlingResource.decrement()
+                EspressoIdlingResource.decrement()
                 showLoading(false)
                 adapter.submitList(resource.data)
             }
             is Resource.Failure -> {
-                //EspressoIdlingResource.decrement()
+                EspressoIdlingResource.decrement()
                 showLoading(false)
                 showNoInternetView(true)
                 toast("Error ${resource.throwable.localizedMessage}")

@@ -2,28 +2,23 @@ package dev.hyuwah.dicoding.moviejetpack.presentation.detail
 
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.os.Handler
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.observe
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import dev.hyuwah.dicoding.moviejetpack.R
 import dev.hyuwah.dicoding.moviejetpack.data.Constant.TYPES
-import dev.hyuwah.dicoding.moviejetpack.data.MovieModel
 import dev.hyuwah.dicoding.moviejetpack.load
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.MovieItem
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.Resource
+import dev.hyuwah.dicoding.moviejetpack.utils.EspressoIdlingResource
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.view_detail_description.*
 import kotlinx.android.synthetic.main.view_detail_rounded_poster_with_shadow.*
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.support.v4.toast
 import org.jetbrains.anko.toast
-import org.jetbrains.anko.toolbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DetailActivity : AppCompatActivity() {
@@ -67,16 +62,16 @@ class DetailActivity : AppCompatActivity() {
 
     private fun updateUI(resource: Resource<MovieItem>){
 //        showNoInternetView(false)
+        EspressoIdlingResource.increment()
         when(resource){
             is Resource.Loading -> {
-                //EspressoIdlingResource.increment()
             }
             is Resource.Success -> {
-                //EspressoIdlingResource.decrement()
+                EspressoIdlingResource.decrement()
                 setupView(resource.data)
             }
             is Resource.Failure -> {
-                //EspressoIdlingResource.decrement()
+                EspressoIdlingResource.decrement()
 //                showNoInternetView(true)
                 toast("Error ${resource.throwable.localizedMessage}")
             }

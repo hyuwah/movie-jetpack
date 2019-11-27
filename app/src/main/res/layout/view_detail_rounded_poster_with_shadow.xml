@@ -14,5 +14,6 @@
         android:adjustViewBounds="true"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
+        android:src="@drawable/placeholder_poster_portrait"
         tools:src="@drawable/poster_alita" />
 </androidx.cardview.widget.CardView>

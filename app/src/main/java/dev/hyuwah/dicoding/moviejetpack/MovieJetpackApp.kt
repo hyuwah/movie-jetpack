@@ -2,6 +2,7 @@ package dev.hyuwah.dicoding.moviejetpack
 
 import android.app.Application
 import dev.hyuwah.dicoding.moviejetpack.di.applicationModule
+import dev.hyuwah.dicoding.moviejetpack.di.networkModule
 import dev.hyuwah.dicoding.moviejetpack.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -14,7 +15,7 @@ class MovieJetpackApp : Application() {
         startKoin {
             androidLogger()
             androidContext(this@MovieJetpackApp)
-            modules(listOf(applicationModule, viewModelModule))
+            modules(listOf(networkModule, applicationModule, viewModelModule))
         }
     }
 

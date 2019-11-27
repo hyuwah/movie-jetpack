@@ -1,16 +1,25 @@
 package dev.hyuwah.dicoding.moviejetpack.presentation
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import dev.hyuwah.dicoding.moviejetpack.data.DummySource
 import dev.hyuwah.dicoding.moviejetpack.data.Repository
+import dev.hyuwah.dicoding.moviejetpack.data.helper.DummyData
 import dev.hyuwah.dicoding.moviejetpack.presentation.main.TvShowListViewModel
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import dev.hyuwah.dicoding.moviejetpack.presentation.model.MovieItem
+import dev.hyuwah.dicoding.moviejetpack.presentation.model.Resource
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class TvShowListViewModelTest {
+    @Rule
+    @JvmField
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     @MockK
     private lateinit var repository: Repository
@@ -20,22 +29,42 @@ class TvShowListViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        viewModel = TvShowListViewModel(repository)
+    }
+
+    @After
+    fun tearDown() {
+    }
+
+    private fun createMockObserver() : Observer<Resource<List<MovieItem>>> = spyk(Observer {  })
+
+    @Test
+    fun `fetch tv show happy flow empty`(){
+        val mockObserver = createMockObserver()
+        viewModel.state.observeForever(mockObserver)
+        coEvery { repository.fetchDiscoverTvShow() } returns listOf()
+
+        // When
+        viewModel.load()
+
+        // Then
+        verify { mockObserver.onChanged(Resource.Loading) }
+        verify { mockObserver.onChanged(Resource.Success(emptyList())) }
+
     }
 
     @Test
-    fun `Should success get all tv show & first item is valid`() {
-        every { repository.getTvShows() }.returns(DummySource.tvShowList)
-        viewModel = TvShowListViewModel(repository)
-        val result = viewModel.tvShows
-        assert(result.isNotEmpty())
-        assertEquals(DummySource.tvShowList.first(), result.first())
-    }
+    fun `fetch tv show happy flow`(){
+        val mockObserver = createMockObserver()
+        viewModel.state.observeForever(mockObserver)
+        coEvery { repository.fetchDiscoverTvShow() } returns DummyData.MovieList.normal()
 
-    @Test
-    fun `Should return empty tv show list`() {
-        every { repository.getTvShows() }.returns(listOf())
-        viewModel = TvShowListViewModel(repository)
-        val result = viewModel.tvShows
-        assert(result.isEmpty())
+        // When
+        viewModel.load()
+
+        // Then
+        verify { mockObserver.onChanged(Resource.Loading) }
+        verify { mockObserver.onChanged(Resource.Success(DummyData.MovieList.normal())) }
+
     }
 }

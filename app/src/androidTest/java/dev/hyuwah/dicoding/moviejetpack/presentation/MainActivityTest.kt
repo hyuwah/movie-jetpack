@@ -6,9 +6,9 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.swipeLeft
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.ViewPagerActions
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.LargeTest
@@ -44,7 +44,8 @@ class MainActivityTest {
     @Test
     fun mainActivityTest() {
         openMovieItemAndBack()
-        onView(withId(R.id.vp_category)).perform(swipeLeft())
+        onView(withId(R.id.vp_category))
+            .perform(ViewPagerActions.scrollToLast())
         openTvShowItemAndBack()
     }
 
@@ -63,11 +64,10 @@ class MainActivityTest {
         val tvShowList = onView(withId(R.id.rv_tvshow_list))
         tvShowList.check(matches(isDisplayed()))
         tvShowList.perform(
-            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(5)
+            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(3)
         )
-        Thread.sleep(300) // wait for scroll
         tvShowList.perform(
-            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5, click())
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(3, click())
         )
         onView(withId(R.id.fab_favorite)).check(matches(isDisplayed()))
         pressBack()

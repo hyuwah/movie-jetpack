@@ -13,7 +13,6 @@ import dev.hyuwah.dicoding.moviejetpack.data.Constant.TYPES
 import dev.hyuwah.dicoding.moviejetpack.load
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.MovieItem
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.Resource
-import dev.hyuwah.dicoding.moviejetpack.utils.EspressoIdlingResource
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.view_detail_description.*
 import kotlinx.android.synthetic.main.view_detail_rounded_poster_with_shadow.*
@@ -42,7 +41,10 @@ class DetailActivity : AppCompatActivity() {
         val id = intent.getIntExtra(ID, 0)
         val type = intent.getStringExtra(TYPE)
 
+        viewModel.state.observe(this, ::updateUI)
+
         type?.let {
+            viewModel.load(type, id)
             if (type == TYPES.MOVIE.name) {
                 tv_detail_title.text = TYPES.MOVIE.value
             } else {
@@ -50,8 +52,6 @@ class DetailActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.state.observe(this, ::updateUI)
-        viewModel.load(type, id)
 
     }
 
@@ -62,16 +62,13 @@ class DetailActivity : AppCompatActivity() {
 
     private fun updateUI(resource: Resource<MovieItem>){
 //        showNoInternetView(false)
-        EspressoIdlingResource.increment()
         when(resource){
             is Resource.Loading -> {
             }
             is Resource.Success -> {
-                EspressoIdlingResource.decrement()
                 setupView(resource.data)
             }
             is Resource.Failure -> {
-                EspressoIdlingResource.decrement()
 //                showNoInternetView(true)
                 toast("Error ${resource.throwable.localizedMessage}")
             }

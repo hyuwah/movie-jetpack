@@ -5,12 +5,14 @@ import dev.hyuwah.dicoding.moviejetpack.asPosterUrl
 import dev.hyuwah.dicoding.moviejetpack.data.remote.TheMovieDbApiService
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.MovieItem
 import dev.hyuwah.dicoding.moviejetpack.toNormalDateFormat
+import dev.hyuwah.dicoding.moviejetpack.utils.EspressoIdlingResource
 
 class Repository(private val theMovieDbApiService: TheMovieDbApiService) : IRepository {
 
     override suspend fun fetchDiscoverMovies(): List<MovieItem> {
-        return try {
-            theMovieDbApiService
+        EspressoIdlingResource.increment()
+        try {
+            val result = theMovieDbApiService
                 .getDiscoverMovies("en", 1, "ID")
                 .results.map {
                 MovieItem(
@@ -24,14 +26,18 @@ class Repository(private val theMovieDbApiService: TheMovieDbApiService) : IRepo
                     it.voteCount
                 )
             }
+            EspressoIdlingResource.decrement()
+            return result
         } catch (e: Throwable) {
-            listOf()
+            EspressoIdlingResource.decrement()
+            return listOf()
         }
     }
 
     override suspend fun fetchDiscoverTvShow(): List<MovieItem> {
-        return try {
-            theMovieDbApiService
+        EspressoIdlingResource.increment()
+        try {
+            val result = theMovieDbApiService
                 .getDiscoverTvShow("en", 1)
                 .results.map {
                 MovieItem(
@@ -45,15 +51,20 @@ class Repository(private val theMovieDbApiService: TheMovieDbApiService) : IRepo
                     it.voteCount
                 )
             }
+            EspressoIdlingResource.decrement()
+            return result
         } catch (e: Throwable) {
-            listOf()
+            EspressoIdlingResource.decrement()
+            return listOf()
         }
     }
 
     override suspend fun fetchTvShowDetailById(id: Int): MovieItem {
-        return try {
+        EspressoIdlingResource.increment()
+        try {
             val response = theMovieDbApiService.getTvShowDetail(id)
-            MovieItem(
+            EspressoIdlingResource.decrement()
+            return MovieItem(
                 id = response.id,
                 title = response.name,
                 overview = response.overview,
@@ -63,16 +74,19 @@ class Repository(private val theMovieDbApiService: TheMovieDbApiService) : IRepo
                 backdropUrl = response.backdropPath.asBackdropUrl(),
                 posterUrl = response.posterPath.asPosterUrl()
             )
-        }catch (e: Throwable){
+        } catch (e: Throwable) {
             println("ERROR: ${e.localizedMessage}")
-            MovieItem()
+            EspressoIdlingResource.decrement()
+            return MovieItem()
         }
     }
 
     override suspend fun fetchMovieDetailById(id: Int): MovieItem {
-        return try {
+        EspressoIdlingResource.increment()
+        try {
             val response = theMovieDbApiService.getMovieDetail(id)
-            MovieItem(
+            EspressoIdlingResource.decrement()
+            return MovieItem(
                 id = response.id,
                 title = response.title,
                 overview = response.overview,
@@ -82,9 +96,10 @@ class Repository(private val theMovieDbApiService: TheMovieDbApiService) : IRepo
                 backdropUrl = response.backdropPath.asBackdropUrl(),
                 posterUrl = response.posterPath.asPosterUrl()
             )
-        }catch (e: Throwable){
+        } catch (e: Throwable) {
             println("ERROR: ${e.localizedMessage}")
-            MovieItem()
+            EspressoIdlingResource.decrement()
+            return MovieItem()
         }
     }
 

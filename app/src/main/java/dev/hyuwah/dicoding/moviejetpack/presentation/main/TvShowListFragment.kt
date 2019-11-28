@@ -14,7 +14,6 @@ import dev.hyuwah.dicoding.moviejetpack.presentation.adapter.DiscoverListAdapter
 import dev.hyuwah.dicoding.moviejetpack.presentation.detail.DetailActivity
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.MovieItem
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.Resource
-import dev.hyuwah.dicoding.moviejetpack.utils.EspressoIdlingResource
 import kotlinx.android.synthetic.main.fragment_tvshow_list.*
 import org.jetbrains.anko.support.v4.intentFor
 import org.jetbrains.anko.support.v4.toast
@@ -48,7 +47,6 @@ class TvShowListFragment : Fragment(), DiscoverListAdapter.Interaction {
 
     private fun updateUI(resource: Resource<List<MovieItem>>){
         showNoInternetView(false)
-        EspressoIdlingResource.increment()
         when(resource){
             is Resource.Loading -> {
                 showLoading(true)
@@ -56,13 +54,11 @@ class TvShowListFragment : Fragment(), DiscoverListAdapter.Interaction {
             is Resource.Success -> {
                 showLoading(false)
                 adapter.submitList(resource.data)
-                EspressoIdlingResource.decrement()
             }
             is Resource.Failure -> {
                 showLoading(false)
                 showNoInternetView(true)
                 toast("Error ${resource.throwable.localizedMessage}")
-                EspressoIdlingResource.decrement()
             }
         }
     }

@@ -27,9 +27,7 @@ class DetailActivity : AppCompatActivity() {
         const val TYPE = "type"
     }
 
-
     private val viewModel: DetailViewModel by viewModel()
-    private lateinit var type: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +40,7 @@ class DetailActivity : AppCompatActivity() {
         val type = intent.getStringExtra(TYPE)
 
         viewModel.state.observe(this, ::updateUI)
+        viewModel.isFavorite.observe(this, ::isFavorite)
 
         type?.let {
             viewModel.load(type, id)
@@ -52,17 +51,17 @@ class DetailActivity : AppCompatActivity() {
             }
         }
 
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == android.R.id.home) finish()
+        if (item.itemId == android.R.id.home) finish()
         return super.onOptionsItemSelected(item)
     }
 
-    private fun updateUI(resource: Resource<MovieItem>){
+    private fun updateUI(resource: Resource<MovieItem>) {
+        fab_favorite.hide()
 //        showNoInternetView(false)
-        when(resource){
+        when (resource) {
             is Resource.Loading -> {
             }
             is Resource.Success -> {
@@ -76,6 +75,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun setupView(movieItem: MovieItem) {
+        fab_favorite.show()
         collapsing_toolbar.title = movieItem.title
         iv_detail_poster.load(movieItem.posterUrl, R.drawable.placeholder_poster_portrait)
         iv_backdrop.load(movieItem.backdropUrl, R.drawable.placeholder_poster_landscape)
@@ -84,6 +84,22 @@ class DetailActivity : AppCompatActivity() {
         tv_detail_rating.text = movieItem.voteAverage.toString()
         tv_detail_overview.text = movieItem.overview
         createBlurBg(movieItem.posterUrl)
+    }
+
+    private fun isFavorite(isFavorite: Boolean) {
+        if (isFavorite) {
+            fab_favorite.setImageResource(R.drawable.ic_favorite_24dp)
+            fab_favorite.setOnClickListener {
+                toast("Removed from favorite")
+                viewModel.removeFromFavorite()
+            }
+        } else {
+            fab_favorite.setImageResource(R.drawable.ic_favorite_border_24dp)
+            fab_favorite.setOnClickListener {
+                toast("Added to favorite")
+                viewModel.saveToFavorite()
+            }
+        }
     }
 
     private fun createBlurBg(posterUrl: String) {

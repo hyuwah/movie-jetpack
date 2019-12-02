@@ -1,13 +1,19 @@
 package dev.hyuwah.dicoding.moviejetpack.data
 
+import androidx.lifecycle.LiveData
 import dev.hyuwah.dicoding.moviejetpack.asBackdropUrl
 import dev.hyuwah.dicoding.moviejetpack.asPosterUrl
+import dev.hyuwah.dicoding.moviejetpack.data.local.FavoritesDao
+import dev.hyuwah.dicoding.moviejetpack.data.local.entity.FavoriteItem
 import dev.hyuwah.dicoding.moviejetpack.data.remote.TheMovieDbApiService
 import dev.hyuwah.dicoding.moviejetpack.presentation.model.MovieItem
 import dev.hyuwah.dicoding.moviejetpack.toNormalDateFormat
 import dev.hyuwah.dicoding.moviejetpack.utils.EspressoIdlingResource
 
-class Repository(private val theMovieDbApiService: TheMovieDbApiService) : IRepository {
+class Repository(
+    private val theMovieDbApiService: TheMovieDbApiService,
+    private val favoritesDao: FavoritesDao
+) : IRepository {
 
     override suspend fun fetchDiscoverMovies(): List<MovieItem> {
         EspressoIdlingResource.increment()
@@ -102,5 +108,23 @@ class Repository(private val theMovieDbApiService: TheMovieDbApiService) : IRepo
             return MovieItem()
         }
     }
+
+    override fun getFavoriteMovies(): LiveData<List<FavoriteItem>> =
+        favoritesDao.getFavoriteMovies()
+
+    override fun getFavoriteTvShow(): LiveData<List<FavoriteItem>> =
+        favoritesDao.getFavoriteTvShow()
+
+    override fun getAllFavorite(): List<FavoriteItem> =
+        favoritesDao.getAllFavorite()
+
+    override suspend fun getFavoriteById(id: Int): FavoriteItem? =
+        favoritesDao.getFavoriteById(id)
+
+    override suspend fun addFavorite(favoriteItem: FavoriteItem) =
+        favoritesDao.insert(favoriteItem)
+
+    override suspend fun removeFavorite(id: Int) =
+        favoritesDao.delete(id)
 
 }

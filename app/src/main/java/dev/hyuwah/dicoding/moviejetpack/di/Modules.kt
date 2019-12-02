@@ -5,8 +5,10 @@ import com.google.gson.GsonBuilder
 import dev.hyuwah.dicoding.moviejetpack.BuildConfig
 import dev.hyuwah.dicoding.moviejetpack.data.IRepository
 import dev.hyuwah.dicoding.moviejetpack.data.Repository
+import dev.hyuwah.dicoding.moviejetpack.data.local.AppDatabase
 import dev.hyuwah.dicoding.moviejetpack.data.remote.TheMovieDbApiService
 import dev.hyuwah.dicoding.moviejetpack.presentation.detail.DetailViewModel
+import dev.hyuwah.dicoding.moviejetpack.presentation.favorite.FavoritesViewModel
 import dev.hyuwah.dicoding.moviejetpack.presentation.main.MovieListViewModel
 import dev.hyuwah.dicoding.moviejetpack.presentation.main.TvShowListViewModel
 import okhttp3.OkHttpClient
@@ -49,11 +51,13 @@ val networkModule = module {
 }
 
 val applicationModule = module {
-    single { Repository(get()) as IRepository }
+    single { AppDatabase.getInstance(get()).favoritesDao() }
+    single { Repository(get(), get()) as IRepository }
 }
 
 val viewModelModule = module {
     viewModel { MovieListViewModel(get()) }
     viewModel { TvShowListViewModel(get()) }
     viewModel { DetailViewModel(get()) }
+    viewModel { FavoritesViewModel(get()) }
 }

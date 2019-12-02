@@ -94,6 +94,18 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:text="85%" />
 
+        <TextView
+            android:id="@+id/tv_favorite_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:visibility="gone"
+            tools:text="TV SHOW"
+            android:textColor="@android:color/white"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:background="@drawable/bg_row_chip_category" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

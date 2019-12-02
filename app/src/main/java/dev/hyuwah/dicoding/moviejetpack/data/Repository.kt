@@ -1,6 +1,8 @@
 package dev.hyuwah.dicoding.moviejetpack.data
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagedList
+import androidx.paging.toLiveData
 import dev.hyuwah.dicoding.moviejetpack.asBackdropUrl
 import dev.hyuwah.dicoding.moviejetpack.asPosterUrl
 import dev.hyuwah.dicoding.moviejetpack.data.local.FavoritesDao
@@ -109,14 +111,8 @@ class Repository(
         }
     }
 
-    override fun getFavoriteMovies(): LiveData<List<FavoriteItem>> =
-        favoritesDao.getFavoriteMovies()
-
-    override fun getFavoriteTvShow(): LiveData<List<FavoriteItem>> =
-        favoritesDao.getFavoriteTvShow()
-
-    override fun getAllFavorite(): List<FavoriteItem> =
-        favoritesDao.getAllFavorite()
+    override fun getAllFavorite(): LiveData<PagedList<FavoriteItem>> =
+        favoritesDao.getAllFavorite().toLiveData(20)
 
     override suspend fun getFavoriteById(id: Int): FavoriteItem? =
         favoritesDao.getFavoriteById(id)

@@ -1,6 +1,7 @@
 package dev.hyuwah.dicoding.moviejetpack.data.local
 
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -19,7 +20,7 @@ interface FavoritesDao {
     fun getFavoriteTvShow(): LiveData<List<FavoriteItem>>
 
     @Query("SELECT * FROM favorites")
-    fun getAllFavorite(): List<FavoriteItem>
+    fun getAllFavorite(): DataSource.Factory<Int, FavoriteItem>
 
     @Query("SELECT * FROM favorites WHERE id = :id")
     fun getFavoriteById(id: Int): FavoriteItem?

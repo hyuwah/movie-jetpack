@@ -3,7 +3,7 @@ package dev.hyuwah.dicoding.moviejetpack.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import dev.hyuwah.dicoding.moviejetpack.R
@@ -13,23 +13,23 @@ import dev.hyuwah.dicoding.moviejetpack.setVisible
 import kotlinx.android.synthetic.main.row_main_movies.view.*
 
 class FavoritesListAdapter(private val interaction: Interaction? = null) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    PagedListAdapter<FavoriteItem, FavoritesListAdapter.ViewHolder>(DIFF_CALLBACK) {
 
-    val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FavoriteItem>() {
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FavoriteItem>() {
 
-        override fun areItemsTheSame(oldItem: FavoriteItem, newItem: FavoriteItem): Boolean {
-            return oldItem.id == newItem.id
+            override fun areItemsTheSame(oldItem: FavoriteItem, newItem: FavoriteItem): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: FavoriteItem, newItem: FavoriteItem): Boolean {
+                return oldItem == newItem
+            }
+
         }
-
-        override fun areContentsTheSame(oldItem: FavoriteItem, newItem: FavoriteItem): Boolean {
-            return oldItem == newItem
-        }
-
     }
-    private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
 
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.row_main_movies, parent, false),
@@ -37,18 +37,10 @@ class FavoritesListAdapter(private val interaction: Interaction? = null) :
         )
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (holder) {
-            is ViewHolder -> {
-                holder.bind(differ.currentList[position])
-            }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        getItem(position)?.let {
+            holder.bind(it)
         }
-    }
-
-    override fun getItemCount(): Int = differ.currentList.size
-
-    fun submitList(list: List<FavoriteItem>) {
-        differ.submitList(list)
     }
 
     class ViewHolder(

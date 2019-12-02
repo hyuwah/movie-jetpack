@@ -1,25 +1,39 @@
 package dev.hyuwah.dicoding.moviejetpack.data
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.paging.DataSource
+import androidx.paging.PagedList
 import dev.hyuwah.dicoding.moviejetpack.data.helper.DummyData
+import dev.hyuwah.dicoding.moviejetpack.data.helper.PagedListUtil
+import dev.hyuwah.dicoding.moviejetpack.data.local.FavoritesDao
+import dev.hyuwah.dicoding.moviejetpack.data.local.entity.FavoriteItem
 import dev.hyuwah.dicoding.moviejetpack.data.remote.TheMovieDbApiService
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 class RepositoryTest {
 
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
+
     @MockK
     private lateinit var service: TheMovieDbApiService
+
+    @MockK
+    private lateinit var favoriteDao: FavoritesDao
 
     private lateinit var repository: Repository
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        repository = Repository(service)
+        repository = Repository(service, favoriteDao)
     }
 
     @Test
@@ -73,4 +87,52 @@ class RepositoryTest {
             assert(result.title == dummyData.title)
         }
     }
+
+    @Test
+    fun `Should successfully get list of favorites`() {
+        val dataSource = mockk<DataSource.Factory<Int, FavoriteItem>>()
+        val mockObserver = spyk<Observer<PagedList<FavoriteItem>>>(Observer { })
+        every { favoriteDao.getAllFavorite() }.returns(dataSource)
+
+        repository.getAllFavorite().testObserver()
+        var result = PagedListUtil.mockPagedList(DummyData.MovieList.normal().map {
+            FavoriteItem(
+                it.id,
+                it.title,
+                it.posterUrl,
+                it.backdropUrl,
+                it.releaseDate,
+                it.overview,
+                it.voteAverage,
+                it.voteCount,
+                "MOVIE"
+            )
+        })
+
+        verify { favoriteDao.getAllFavorite() }
+        assert(DummyData.MovieList.normal().size == result.size)
+    }
+
+    fun `Should successfully get favorite item by id`() {
+
+    }
+
+    fun `Should successfully add item to favorite db`() {
+
+    }
+
+    fun `Should successfully remove item from favorite db`() {
+
+    }
 }
+
+open class TestObserver<T> : Observer<T> {
+
+    val observedValues = mutableListOf<T?>()
+
+    override fun onChanged(value: T?) {
+        observedValues.add(value)
+    }
+}
+
+fun <T> LiveData<T>.testObserver() = TestObserver<T>().also { observeForever(it) }

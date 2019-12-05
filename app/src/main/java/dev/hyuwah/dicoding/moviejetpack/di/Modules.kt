@@ -11,6 +11,7 @@ import dev.hyuwah.dicoding.moviejetpack.presentation.detail.DetailViewModel
 import dev.hyuwah.dicoding.moviejetpack.presentation.favorite.FavoritesViewModel
 import dev.hyuwah.dicoding.moviejetpack.presentation.main.MovieListViewModel
 import dev.hyuwah.dicoding.moviejetpack.presentation.main.TvShowListViewModel
+import dev.hyuwah.dicoding.moviejetpack.utils.EspressoIdlingResource
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -52,7 +53,13 @@ val networkModule = module {
 
 val applicationModule = module {
     single { AppDatabase.getInstance(get()).favoritesDao() }
-    single { Repository(get(), get()) as IRepository }
+    single {
+        Repository(
+            get(),
+            get(),
+            EspressoIdlingResource.getEspressoIdlingResource()
+        ) as IRepository
+    }
 }
 
 val viewModelModule = module {

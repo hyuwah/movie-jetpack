@@ -20,6 +20,13 @@ fun <T> List<T>.asPagedList() = LivePagedListBuilder<Int, T>(
 )
     .build().getOrAwaitValue()
 
+fun <T> List<T>.asMockDataSourceFactory(): DataSource.Factory<Int, T> =
+    object : DataSource.Factory<Int, T>() {
+        override fun create(): DataSource<Int, T> {
+            return MockLimitDataSource(this@asMockDataSourceFactory)
+        }
+    }
+
 private fun <T> createMockDataSourceFactory(itemList: List<T>): DataSource.Factory<Int, T> =
     object : DataSource.Factory<Int, T>() {
         override fun create(): DataSource<Int, T> = MockLimitDataSource(itemList)
